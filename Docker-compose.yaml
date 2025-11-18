@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: feedback-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: feedbackdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - feedback-net
+
+  backend:
+    build: ./feedback_form_submission
+    container_name: feedback-backend
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/feedbackdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8088:8080"
+    networks:
+      - feedback-net
+
+  frontend:
+    build: ./feedback_form_frontend/feedback-app
+    container_name: feedback-frontend
+    ports:
+      - "5173:5173"
+    networks:
+      - feedback-net
+
+volumes:
+  mysql_data:
+
+networks:
+  feedback-net:
