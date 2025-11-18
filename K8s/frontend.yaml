@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+vi frontend.yamlapiVersion: apps/v1
 kind: Deployment
 metadata:
   name: feedback-frontend
@@ -14,7 +14,9 @@ spec:
     spec:
       containers:
         - name: feedback-frontend
-          image: karnativ/feedback-frontend:latest
+          image: feedback_submission_system-frontend:latest
+          imagePullPolicy: Never
+
           env:
             - name: VITE_BACKEND_URL
               value: http://feedback-backend:8088
