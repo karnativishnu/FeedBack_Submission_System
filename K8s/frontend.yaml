@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feedback-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feedback-frontend
+  template:
+    metadata:
+      labels:
+        app: feedback-frontend
+    spec:
+      containers:
+        - name: feedback-frontend
+          image: karnativ/feedback-frontend:latest
+          env:
+            - name: VITE_BACKEND_URL
+              value: http://feedback-backend:8088
+          ports:
+            - containerPort: 5173
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feedback-frontend
+spec:
+  type: NodePort   # For K3d use: "ClusterIP" + k3d port forward
+  selector:
+    app: feedback-frontend
+  ports:
+    - port: 5173
+      targetPort: 5173
+      nodePort: 30000
